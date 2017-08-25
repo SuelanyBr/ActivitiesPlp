@@ -11,33 +11,33 @@ public class Buffer {
 
 	public synchronized int add(int id) {
 		while (!trab) {
-            try {
-                System.out.println("Consumidor #" + id + " esperado...");
-                wait();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("Consumidor #" + id + " consumiu: produto #" + (this.cont+1));
-        trab = false;
-        notifyAll();
-        return cont;
+            		try {
+               			System.out.println("Consumidor #" + id + " esperado...");
+                		wait();
+            		} catch (Exception e) {
+                		e.printStackTrace();
+            		}
+        	}
+       		System.out.println("Consumidor #" + id + " consumiu: produto #" + (this.cont++));
+        	stopTrab();
+        	notifyAll();
+        	return cont;
 	}
 	
 	public synchronized void del(int id, int totalc) {
 		
-		while (trab) {
-            try {
-                System.out.println("Produtor #" + id + " esperando...");
-                wait();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+		while (isTrab()) {
+            		try {
+                		System.out.println("Produtor #" + id + " esperando...");
+                		wait();
+            		} catch (Exception e) {
+            			e.printStackTrace();
+           		}
+       		}
 		cont = totalc;
-        System.out.println("Produtor #" + id + " colocou produto #" + (this.cont+1));
-        trab = true;
-        notifyAll();
+        	System.out.println("Produtor #" + id + " colocou produto #" + (this.cont++));
+        	contTrab();
+        	notifyAll();
 
 	}
 	
@@ -47,19 +47,18 @@ public class Buffer {
 	}
 
 	public Boolean isTrab() {
-		if(!trab) {
-			if(cont == 0) {
-				return false;
-			}
-			return true;
-		}
-		return true;
+		return trab;
 	}
 
 
 	public void stopTrab() {
 		this.trab = false;
 	}
+
+	public void contTrab() {
+		this.trab = true;
+	}
+	
 	
 	
 	
